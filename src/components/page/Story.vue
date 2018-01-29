@@ -21,7 +21,7 @@ export default {
       storyContent: ""
     };
   },
-  mounted() {
+  activated() {
     this.getStoryData(this.$route.params.id);
     this.getStoryExtra(this.$route.params.id);
   },

@@ -10,6 +10,7 @@
           </div>
           <div class="theme" @click="showTheme"><span></span><span></span><span></span></div>
         </div>
+        <div v-show="!getIsIndex" class="follow" :class="{cur: isFollow}" @click="setFollow"><span></span></div>
       </div>
       <div class="story-header" v-show="getIsStory">
         <a class="back" href="javascript:;" @click="$router.back()"></a>
@@ -41,9 +42,9 @@
           </div>
         </section>
         <ul class="nav-list">
-          <li @click="isNav=false"><router-link class="home" to="/home">首页<span></span></router-link></li>
-          <router-link tag="li" v-for="item in navData" :to="'/theme/'+ item.id" :key="item.id">
-            <div @click="isNav=false">
+          <li @click="choiceNav('-1')"><router-link class="home" to="/home">首页<span></span></router-link></li>
+          <router-link tag="li" v-for="(item, index) in navData" :to="'/theme/'+ item.id" :key="item.id">
+            <div @click="choiceNav(index)">
               <a href="javascript:;">{{ item.name }}<span></span></a>
             </div>
           </router-link>
@@ -57,15 +58,16 @@ import { mapGetters, mapActions } from "Vuex";
 export default {
   data() {
     return {
-      pageName: "",
+      pageName: "首页",
       isTheme: false,
       themeTip: "夜间模式",
       isNotice: false,
       isNav: false,
-      navData:[],
+      navData: [],
       userPice: "",
       userName: "请登录",
       isLike: false,
+      isFollow: false
     };
   },
   watch: {
@@ -76,6 +78,7 @@ export default {
   },
   mounted() {
     this.setHeader();
+    this.getNavData();
   },
   computed: {
     ...mapGetters([
@@ -86,22 +89,19 @@ export default {
       "getLikeNum"
     ])
   },
-  mounted() {
-    this.getNavData();
-  },
   methods: {
     ...mapActions(["setNight", "setStory", "setIndex"]),
     // 设置头部内容
     setHeader(routeName) {
-      if (this.$route.name === "文章") {
-        this.setStory(true);
-      } else {
-        this.setStory(false);
-      }
       if (this.$route.name === "首页") {
         this.setIndex(true);
       } else {
         this.setIndex(false);
+      }
+      if (this.$route.name === "文章") {
+        this.setStory(true);
+      } else {
+        this.setStory(false);
       }
     },
     // 显示设置主题模式
@@ -137,16 +137,30 @@ export default {
             return {
               name: ele.name,
               id: ele.id
-            }
-          })
+            };
+          });
         })
         .catch(err => {
           console.log(err);
         });
     },
+    // 选择栏目
+    choiceNav(navIndex) {
+      this.isNav = false;
+      // console.log(this.$refs[refName]);
+      if (navIndex === "-1") {
+        this.pageName = "首页";
+      } else {
+        this.pageName = this.navData[navIndex].name;
+      }
+    },
     // 点赞
     iLinke() {
       this.isLike = !this.isLike;
+    },
+    // 关注
+    setFollow() {
+      this.isFollow = !this.isFollow;
     }
   }
 };

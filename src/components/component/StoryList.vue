@@ -1,7 +1,7 @@
 <template>
     <div class="new-box">
         <div v-for="(item, index) in storyListData" :key="index">
-            <p class="story-date">{{ item.storyDate }}</p>
+            <slot><p class="story-date">{{ item.storyDate }}</p></slot>
             <ul class="new-list">
                 <router-link tag="li" v-for="story in item.data" :to="'/story/'+story.id" :key="story.id">
                     <a href="javascript:;" class="clearfix">
@@ -26,9 +26,9 @@ export default {
 .new-box {
   padding: 10px;
 
-  .story-date{
-      padding: 0 0 10px 4px;
-      color: #5e5e5e;
+  .story-date {
+    padding: 10px 0 10px 4px;
+    color: #5e5e5e;
   }
 
   .new-list {
